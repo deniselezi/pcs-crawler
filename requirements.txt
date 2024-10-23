@@ -3,3 +3,4 @@ language-tool-python
 selenium
 Jinja2
 black
+python-dotenv
