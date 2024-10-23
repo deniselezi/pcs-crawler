@@ -1,4 +1,11 @@
 import sys
+from crawler import *
+import os
+from dotenv import find_dotenv, load_dotenv
+
+dotenv_path = find_dotenv()
+load_dotenv(dotenv_path)
+
 
 def command_failed():
     return None
@@ -9,7 +16,7 @@ def get_arguments(arguments):
     number_of_arguments = len(arguments)
     print("Number of arguments", number_of_arguments)
 
-    if number_of_arguments != 2:
+    if number_of_arguments < 1 or number_of_arguments > 2:
         print("Incorrect command usage, please follow the correct format")
         print("COMMAND: python3 [link] [max_repos]")
         return command_failed()
@@ -50,10 +57,14 @@ def generate_url(arguments):
     group_name, repo_name = repo_link[0], repo_link[1]
 
     if repo_name.endswith('.git'):
-         repo_name = repo_name[:-4]
+        repo_name = repo_name[:-4]
 
     url = f"https://github.com/search?q=repo%3A{group_name}/{repo_name}%20path%3A.md&type=code"
     return url
+
+def create_crawler(url):
+    crawler = Crawler(url)
+    crawler.crawl(os.getenv("USER"), os.getenv("PASSWORD"))
 
 
 if __name__ == "__main__":
@@ -63,4 +74,11 @@ if __name__ == "__main__":
     if url:
         print("URL:",  url)
     else:
-        print("Failed to generate URL")
+        exit()
+    
+    create_crawler(url)
+    
+    
+
+
+    
