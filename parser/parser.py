@@ -8,7 +8,7 @@ class MarkdownParser:
 
         Args:
             text - the markdown text to convert into plain text
-        
+
         Returns:
             the plain text
         """

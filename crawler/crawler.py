@@ -8,7 +8,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from parser.parser import MarkdownParser
 
 import math
-import time
 
 
 class Crawler:
@@ -24,7 +23,7 @@ class Crawler:
             url = self.to_crawl.popleft()
             self.driver.get(url)
             self.__sign_in(user, password)
-            
+
             md_parser = MarkdownParser()
             mds = self.__fetch_markdowns()
             for md_url in mds:
@@ -52,7 +51,7 @@ class Crawler:
 
         sign_in_button = self.driver.find_element(By.XPATH, "//input[@type='submit']")
         sign_in_button.click()
-    
+
     def __fetch_markdowns(self):
         elems = WebDriverWait(self.driver, 10).until(
             EC.presence_of_all_elements_located(
@@ -60,7 +59,7 @@ class Crawler:
             )
         )
 
-        return [e.get_attribute('href') for e in elems]
+        return [e.get_attribute("href") for e in elems]
 
     def __read_md(self, url):
         self.driver.get(url)
@@ -70,4 +69,3 @@ class Crawler:
         )
 
         return text_area.text
-
