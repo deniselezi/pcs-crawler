@@ -14,7 +14,6 @@ class Crawler:
         self.to_crawl = deque([start_point])
         self.crawl_limit = crawl_limit if crawl_limit else math.inf
         self.crawls = 0
-        self.mds = []
 
         self.driver = webdriver.Chrome()  # or any other Selenium driver
 
@@ -22,10 +21,12 @@ class Crawler:
         while self.to_crawl and self.crawls < self.crawl_limit:
             url = self.to_crawl.popleft()
             self.driver.get(url)
+            self.__sign_in(user, password)
+            mds = self.__fetch_markdowns()
+            print(mds)
+            time.sleep(2)
 
-            self._sign_in(user, password)
-
-    def _sign_in(self, user, password):
+    def __sign_in(self, user, password):
         elems = WebDriverWait(self.driver, 10).until(
             EC.presence_of_all_elements_located(
                 (By.CLASS_NAME, "types__StyledButton-sc-ws60qy-0")
@@ -34,14 +35,26 @@ class Crawler:
 
         sign_in_button = next(filter(lambda a: a.text == "Sign in", elems))
         sign_in_button.click()
+        time.sleep(1)
 
         username_input = WebDriverWait(self.driver, 10).until(
             EC.presence_of_element_located((By.ID, "login_field"))
         )
         password_input = self.driver.find_element(By.ID, "password")
         username_input.send_keys(user)
+        time.sleep(1)
         password_input.send_keys(password)
+        time.sleep(1)
 
         sign_in_button = self.driver.find_element(By.XPATH, "//input[@type='submit']")
         sign_in_button.click()
-        time.sleep(3)
+        time.sleep(1)
+    
+    def __fetch_markdowns(self):
+        elems = WebDriverWait(self.driver, 10).until(
+            EC.presence_of_all_elements_located(
+                (By.XPATH, "//a[@data-testid='link-to-search-result']")
+            )
+        )
+
+        return [e.get_attribute('href') for e in elems]
