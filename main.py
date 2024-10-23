@@ -8,7 +8,7 @@ load_dotenv(dotenv_path)
 
 
 def command_failed():
-    return None
+    exit()
 
 
 def get_arguments(arguments):
@@ -25,13 +25,6 @@ def get_arguments(arguments):
 
 
 def validate_arguments(arguments):
-    if not arguments:
-        return command_failed()
-    
-
-
-        
-
     first_argument = arguments[0]
 
     try:
@@ -56,9 +49,6 @@ def validate_arguments(arguments):
 
 
 def generate_url(arguments):
-    if not arguments:
-        return command_failed()
-
     first_argument = arguments[0]
     repo_link = first_argument.split("/")[-2:]
     group_name, repo_name = repo_link[0], repo_link[1]
