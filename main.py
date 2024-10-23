@@ -25,11 +25,14 @@ def get_arguments(arguments):
 
 
 def validate_arguments(arguments):
-    if arguments is None:
+    if not arguments:
         return command_failed()
+    
+
+
+        
 
     first_argument = arguments[0]
-    second_argument = arguments[1]
 
     try:
         if first_argument.startswith("http"):
@@ -40,18 +43,20 @@ def validate_arguments(arguments):
         print("Incorrect command usage, argument 1 is not a valid URL.")
         return command_failed()
 
-    try:
-        if int(second_argument):
-            pass
-    except ValueError:
-        print("Incorrect command usage, argument 2 is not an integer")
-        return command_failed()
+    if len(arguments) == 2:
+        second_argument = arguments[1]
+        try:
+            if int(second_argument):
+                pass
+        except ValueError:
+            print("Incorrect command usage, argument 2 is not an integer")
+            return command_failed()
 
     return arguments
 
 
 def generate_url(arguments):
-    if arguments is None:
+    if not arguments:
         return command_failed()
 
     first_argument = arguments[0]
