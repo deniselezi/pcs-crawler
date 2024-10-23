@@ -18,47 +18,32 @@ class Crawler:
 
         self.driver = webdriver.Chrome()  # or any other Selenium driver
 
-        self.crawl()
-
-    def crawl(self):
+    def crawl(self, user, password):
         while self.to_crawl and self.crawls < self.crawl_limit:
             url = self.to_crawl.popleft()
             self.driver.get(url)
 
-            self._sign_in()
+            self._sign_in(user, password)
 
-    def _sign_in(self):
+    def _sign_in(self, user, password):
         elems = self.driver.find_elements(
             By.CLASS_NAME, "types__StyledButton-sc-ws60qy-0"
         )
         sign_in_button = next(filter(lambda a: a.text == "Sign in", elems))
-        
+
         sign_in_button.click()
         time.sleep(3)
 
-        username_input = self.driver.find_element(
-            By.ID, "login_field"
-        )
+        username_input = self.driver.find_element(By.ID, "login_field")
 
-        password_input = self.driver.find_element(
-            By.ID, "password"
-        )
+        password_input = self.driver.find_element(By.ID, "password")
 
-        # print(username_input)
-        # print(password_input)
-
-        username_input.send_keys("username")
+        username_input.send_keys(user)
         time.sleep(1)
-        password_input.send_keys("password")
+        password_input.send_keys(password)
         time.sleep(1)
-        
+
         sign_in_button = self.driver.find_element(By.XPATH, "//input[@type='submit']")
         print(sign_in_button)
         sign_in_button.click()
         time.sleep(3)
-
-        # for l in login:
-        #     print(l.text)
-
-# "types__StyledButton-sc-ws60qy-0 
-# 
