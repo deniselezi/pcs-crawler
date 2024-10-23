@@ -1,6 +1,6 @@
 import sys
 import os
-from crawler import *
+from crawler.crawler import Crawler
 from dotenv import find_dotenv, load_dotenv
 
 dotenv_path = find_dotenv()
