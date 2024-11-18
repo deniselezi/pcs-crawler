@@ -1,4 +1,3 @@
-beautifulsoup4
 language-tool-python
 selenium
 Jinja2
