@@ -6,13 +6,10 @@ description:  Generates a html report based on inputs given using template build
 
 """
 
-import os   
+import os
 import webbrowser
 
-from jinja2 import (Environment, 
-                    PackageLoader, 
-                    select_autoescape, 
-                    Template)
+from jinja2 import Environment, PackageLoader, select_autoescape, Template
 
 
 def make_env() -> Environment:
@@ -25,13 +22,13 @@ def make_env() -> Environment:
 
     """
     env = Environment(
-        loader=PackageLoader("pcs-crawler"),
-        autoescape=select_autoescape()
+        loader=PackageLoader("pcs-crawler"), autoescape=select_autoescape()
     )
 
     return env
 
-def render_report(template: Template, **vars) -> None:
+
+def render_report(template: Template, **vars_) -> None:
     """
     Renders the report.
 
@@ -48,20 +45,20 @@ def render_report(template: Template, **vars) -> None:
 
     """
 
-    with open('out/output.html', 'w') as f:
-        print(template.render(vars), file = f)
+    with open("out/output.html", "w", encoding="utf-8") as output_file:
+        print(template.render(vars_), file=output_file)
 
 
 def make_report():
     """
     Generates the report based using Jinja.
     """
-    
-    # Grab the env for Jinja
-    env = make_env();
 
-    template = env.get_template('default.html')
+    # Grab the env for Jinja
+    env = make_env()
+
+    template = env.get_template("default.html")
 
     render_report(template, test=1)
 
-    webbrowser.open_new_tab('file://' + os.path.realpath( './out/output.html'))
+    webbrowser.open_new_tab("file://" + os.path.realpath("./out/output.html"))

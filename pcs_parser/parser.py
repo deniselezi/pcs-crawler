@@ -12,4 +12,4 @@ class MarkdownParser:
         Returns:
             the plain text
         """
-        return text  # TODO: implement parsing here (Shakir/Zafar)
+        return text  # implement parsing here (Shakir/Zafar)

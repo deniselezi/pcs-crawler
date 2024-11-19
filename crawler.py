@@ -1,12 +1,12 @@
-from dotenv import find_dotenv, load_dotenv
 from collections import deque
-
-from parser.parser import MarkdownParser
-from scraper.scraper import Scraper
-
 import math
 import sys
 import os
+
+from dotenv import find_dotenv, load_dotenv
+
+from pcs_parser.parser import MarkdownParser
+from pcs_scraper.scraper import Scraper
 
 
 class Crawler:
@@ -36,12 +36,12 @@ def command_failed():
     exit()
 
 
-"""Extracts arguments and validates them."""
 def get_args(args):
+    """Extracts arguments and validates them."""
     args.pop(0)  # remove filename
     n_args = len(args)
 
-    if not (1 <= n_args <= 2):
+    if not 1 <= n_args <= 2:
         print("Invalid number of args, please follow the correct format")
         print("COMMAND: python3 pcs-crawler.py LINK [MAX_REPOS]")
         return command_failed()
@@ -50,7 +50,7 @@ def get_args(args):
         print("First arg is not a valid URL")
         return command_failed()
 
-    if n_args == 2 and not(args[1].isdigit()):
+    if n_args == 2 and not args[1].isdigit():
         print("Incorrect command usage, argument 2 is not an integer")
         return command_failed()
 

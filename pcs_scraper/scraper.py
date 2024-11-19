@@ -1,4 +1,6 @@
 from selenium import webdriver
+
+# from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -14,12 +16,21 @@ class Scraper:
         Given a repository URL, handles signing into GitHub and extracts
         the text contents of all markdown files in the repository.
         """
+
+        # try:
+        #     self.driver.get(url)
+        #     self.__sign_in(user, password)
+
+        #     for md_url in self.__fetch_markdowns():
+        #         self.md_contents[md_url] = self.__read_md(md_url)
+
+        # except TimeoutException:
+
         self.driver.get(url)
         self.__sign_in(user, password)
 
         for md_url in self.__fetch_markdowns():
             self.md_contents[md_url] = self.__read_md(md_url)
-        
         return self.md_contents
 
     def __sign_in(self, user, password):
