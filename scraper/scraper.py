@@ -1,36 +1,26 @@
-from collections import deque
-
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-from parser.parser import MarkdownParser
 
-import math
-
-
-class Crawler:
-    def __init__(self, start_point, crawl_limit=None):
-        self.to_crawl = deque([start_point])
-        self.crawl_limit = crawl_limit if crawl_limit else math.inf
-        self.crawls = 0
-
+class Scraper:
+    def __init__(self):
         self.driver = webdriver.Chrome()  # or any other Selenium driver
+        self.md_contents = {}
 
-    def crawl(self, user, password):
-        while self.to_crawl and self.crawls < self.crawl_limit:
-            url = self.to_crawl.popleft()
-            self.driver.get(url)
-            self.__sign_in(user, password)
+    def scrape(self, url, user, password):
+        """
+        Given a repository URL, handles signing into GitHub and extracts
+        the text contents of all markdown files in the repository.
+        """
+        self.driver.get(url)
+        self.__sign_in(user, password)
 
-            md_parser = MarkdownParser()
-            mds = self.__fetch_markdowns()
-            for md_url in mds:
-                md_text = self.__read_md(md_url)
-                print(md_parser.parse(md_text))
-                # log output somewhere here to later add onto report
-                # maybe move this code out of crawler to main file
+        for md_url in self.__fetch_markdowns():
+            self.md_contents[md_url] = self.__read_md(md_url)
+        
+        return self.md_contents
 
     def __sign_in(self, user, password):
         elems = WebDriverWait(self.driver, 10).until(
