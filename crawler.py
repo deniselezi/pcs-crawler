@@ -9,25 +9,6 @@ from pcs_parser.parser import MarkdownParser
 from pcs_scraper.scraper import Scraper
 
 
-class Crawler:
-    def __init__(self, start_point, crawl_limit=None):
-        self.to_crawl = deque([start_point])
-        self.crawl_limit = crawl_limit if crawl_limit else math.inf
-        self.crawls = 0
-
-        self.parser = MarkdownParser()
-        self.scraper = Scraper()
-
-    def crawl(self, user, password):
-        while self.to_crawl and self.crawls < self.crawl_limit:
-            url = self.to_crawl.popleft()
-            md_contents = self.scraper.scrape(url, user, password)
-            for key, val in md_contents.items():
-                print(f"Text of markdown file at {key} url")
-                print(self.parser.parse(val)[:100])
-                print("\n\n\n")
-
-
 dotenv_path = find_dotenv()
 load_dotenv(dotenv_path)
 
@@ -82,5 +63,24 @@ if __name__ == "__main__":
         print("Could not fetch username and/or password from .env")
         command_failed()
 
-    crawler = Crawler(URL)
-    crawler.crawl(user, password)
+    # start crawling
+
+    to_crawl = deque([URL])
+    crawl_limit = math.inf if len(args) == 1 else args[1]
+
+    parser = MarkdownParser()
+    scraper = Scraper()
+
+    CRAWLS = 0
+    while to_crawl and CRAWLS < crawl_limit:
+        url = to_crawl.popleft()
+        md_contents = scraper.scrape(url, user, password)
+        for key, val in md_contents.items():
+            print(f"Text of markdown file at {key} url")
+            print(parser.parse(val)[:100])
+            print("\n\n\n")
+
+            # after parsing urls from markdowns, append to to_crawl here
+            # to continue crawling
+
+        CRAWLS += 1
