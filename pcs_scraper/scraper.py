@@ -1,6 +1,6 @@
 from selenium import webdriver
 
-# from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -28,7 +28,6 @@ class Scraper:
 
         self.driver.get(url)
         self.__sign_in(user, password)
-
         for md_url in self.__fetch_markdowns():
             self.md_contents[md_url] = self.__read_md(md_url)
         return self.md_contents
@@ -54,11 +53,17 @@ class Scraper:
         sign_in_button.click()
 
     def __fetch_markdowns(self):
-        elems = WebDriverWait(self.driver, 10).until(
-            EC.presence_of_all_elements_located(
-                (By.XPATH, "//a[@data-testid='link-to-search-result']")
+        try:
+            elems = WebDriverWait(self.driver, 10).until(
+                EC.presence_of_all_elements_located(
+                    (By.XPATH, "//a[@data-testid='link-to-search-result']")
+                )
             )
-        )
+        except TimeoutException:
+            # can be triggered by "Not indexed yet"
+            # https://github.com/orgs/community/discussions/107482
+            print("Timeout error on markdowns fetch")
+            elems = []
 
         return [e.get_attribute("href") for e in elems]
 
