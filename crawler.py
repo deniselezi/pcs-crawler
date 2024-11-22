@@ -33,7 +33,7 @@ load_dotenv(dotenv_path)
 
 
 def command_failed():
-    exit()
+    sys.exit()
 
 
 def get_args(args):
@@ -71,10 +71,10 @@ def generate_url(args):
 if __name__ == "__main__":
     args = get_args(sys.argv)
 
-    url = generate_url(args)
+    URL = generate_url(args)
     user, password = os.getenv("USER"), os.getenv("PASSWORD")
 
-    if not url:
+    if not URL:
         print("Please provide an URL")
         command_failed()
 
@@ -82,5 +82,5 @@ if __name__ == "__main__":
         print("Could not fetch username and/or password from .env")
         command_failed()
 
-    crawler = Crawler(url)
+    crawler = Crawler(URL)
     crawler.crawl(user, password)
