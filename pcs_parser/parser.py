@@ -24,7 +24,7 @@ class MarkdownParser:
         text = soup.get_text()
         return text
     
-    def extract_links(self,link):
+    def extract_repos(self,link):
         # Extract github links from plaintext file
 
         
