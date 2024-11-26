@@ -30,9 +30,10 @@ class MarkdownParser:
 
     def find_repos(self, text):
         pattern = r"https:\/\/github\.com\/[\w\-]+\/[\w\-]+(?=\/?)"
-        return set(re.findall(pattern, text))
+        cleaned_repos = self._clean(set(re.findall(pattern, text)))
+        return cleaned_repos
 
-    def clean(self, repos_obtained):
+    def _clean(self, repos_obtained):
         blacklist = ["https://github.com/signup/free"]
         for blacklist_link in blacklist:
             repos_obtained.discard(blacklist_link)

@@ -79,11 +79,9 @@ if __name__ == "__main__":
             print(f"Text of markdown file at {key} url")
             TEXT = parser.parse(val)
             repos = parser.find_repos(val)
-            cleaned_repos = parser.clean(repos)
             all_repos.update(repos)
             print("\n\n\n")
 
             # after parsing urls from markdowns, append to to_crawl here
             # to continue crawling
-
         CRAWLS += 1
