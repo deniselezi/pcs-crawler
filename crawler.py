@@ -66,21 +66,22 @@ if __name__ == "__main__":
     # start crawling
 
     to_crawl = deque([URL])
-    crawl_limit = math.inf if len(args) == 1 else args[1]
-
+    CRAWL_LIMIT = int(math.inf if len(args) == 1 else args[1])
     parser = MarkdownParser()
     scraper = Scraper()
 
     CRAWLS = 0
-    while to_crawl and CRAWLS < crawl_limit:
+    while to_crawl and CRAWLS < CRAWL_LIMIT:
         url = to_crawl.popleft()
         md_contents = scraper.scrape(url, user, password)
+        all_repos = set()
         for key, val in md_contents.items():
             print(f"Text of markdown file at {key} url")
-            print(parser.parse(val)[:100])
+            TEXT = parser.parse(val)
+            repos = parser.find_repos(val)
+            all_repos.update(repos)
             print("\n\n\n")
 
             # after parsing urls from markdowns, append to to_crawl here
             # to continue crawling
-
         CRAWLS += 1

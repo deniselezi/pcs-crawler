@@ -3,3 +3,5 @@ selenium
 Jinja2
 black
 python-dotenv
+bs4
+markdown
