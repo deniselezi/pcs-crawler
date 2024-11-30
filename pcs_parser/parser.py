@@ -17,18 +17,14 @@ class MarkdownParser:
         Returns:
             the plain text
         """
-
-        # Convert markdown to HTML
+        urls = self._find_repos(text)
         html_content = markdown.markdown(text)
 
-        # Parse the HTML and extract plain text
         soup = BeautifulSoup(html_content, "html.parser")
         text = soup.get_text()
-        return text
+        return text, urls
 
-    # Finds repos within the plaintext file to continue crawling
-
-    def find_repos(self, text):
+    def _find_repos(self, text):
         pattern = r"https:\/\/github\.com\/[\w\-]+\/[\w\-]+(?=\/?)"
         cleaned_repos = self._clean(set(re.findall(pattern, text)))
         return cleaned_repos
