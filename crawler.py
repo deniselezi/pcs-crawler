@@ -2,6 +2,7 @@ from collections import deque
 import math
 import sys
 import os
+import re
 
 from dotenv import find_dotenv, load_dotenv
 
@@ -12,12 +13,24 @@ from pcs_scraper.scraper import Scraper
 dotenv_path = find_dotenv()
 load_dotenv(dotenv_path)
 
-def _check_type(type, args):
-    return all(isinstance(item, type) for item in args)
+
+def _check_type(expected_type, args):
+    return all(isinstance(item, expected_type) for item in args)
+
+
+def _is_repo_url(url):
+    pattern = r"https:\/\/github\.com\/[\w\-]+\/[\w\-]+(?=\/?)"
+    if re.search(pattern,url):
+        print("Found a match?")
+        return True
+    else:
+        return False
+
 
 def command_failed():
     print("COMMAND: python3 pcs-crawler.py LINK [MAX_REPOS]")
     sys.exit(1)
+
 
 def get_args(args):
     """Extracts arguments and validates them."""
@@ -45,6 +58,7 @@ def get_args(args):
 
 def generate_url(args):
     repo_link = args[0].split("/")[-2:]
+
     group_name, repo_name = repo_link[0], repo_link[1]
 
     if repo_name.endswith(".git"):
