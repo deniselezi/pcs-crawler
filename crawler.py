@@ -8,6 +8,7 @@ from dotenv import find_dotenv, load_dotenv
 
 from pcs_parser.parser import MarkdownParser
 from pcs_scraper.scraper import Scraper
+from pcs_spellchecker.spellchecker import Spellchecker
 
 
 dotenv_path = find_dotenv()
@@ -45,8 +46,8 @@ def get_args(args):
         print("Invalid number of args, please follow the correct format")
         return command_failed()
 
-    if not args[0].startswith("http"):
-        print("First arg is not a valid URL")
+    if not args[0].startswith("https://github.com/"):
+        print("First arg is not a valid GitHub URL")
         return command_failed()
 
     if n_args == 2 and not args[1].isdigit():
@@ -56,22 +57,10 @@ def get_args(args):
     return args
 
 
-def generate_url(args):
-    repo_link = args[0].split("/")[-2:]
-
-    group_name, repo_name = repo_link[0], repo_link[1]
-
-    if repo_name.endswith(".git"):
-        repo_name = repo_name[:-4]
-
-    url = f"https://github.com/search?q=repo%3A{group_name}/{repo_name}%20path%3A.md&type=code"
-    return url
-
-
 if __name__ == "__main__":
     args = get_args(sys.argv)
 
-    URL = generate_url(args)
+    URL = args[0]
     user, password = os.getenv("USER"), os.getenv("PASSWORD")
 
     if not URL:
@@ -83,24 +72,34 @@ if __name__ == "__main__":
         command_failed()
 
     # start crawling
-
     to_crawl = deque([URL])
-    CRAWL_LIMIT = int(math.inf if len(args) == 1 else args[1])
+    history = set()
+    CRAWL_LIMIT = math.inf if len(args) == 1 else int(args[1])
+    print(CRAWL_LIMIT)
     parser = MarkdownParser()
-    scraper = Scraper()
+    scraper = Scraper(headless=False)
+    spellchecker = Spellchecker()
 
     CRAWLS = 0
     while to_crawl and CRAWLS < CRAWL_LIMIT:
+        repo_misspells = (
+            {}
+        )  # dict mapping repo url to a list of misspellt words and suggested fixes
         url = to_crawl.popleft()
+        if url in history:
+            continue
+        history.add(url)
         md_contents = scraper.scrape(url, user, password)
-        all_repos = set()
         for key, val in md_contents.items():
-            print(f"Text of markdown file at {key} url")
-            TEXT = parser.parse(val)
-            repos = parser.find_repos(val)
-            all_repos.update(repos)
-            print("\n\n\n")
+            text, github_urls = parser.parse(val)
+            repo_misspells[key] = spellchecker.check(text)  # possible bottleneck
+            for r in github_urls:
+                to_crawl.append(r)
 
-            # after parsing urls from markdowns, append to to_crawl here
-            # to continue crawling
+        # serialize repo_misspells somewhere over here
+
         CRAWLS += 1
+
+    # here, read previously serialized information and use it to generate the report
+
+    scraper.quit()
