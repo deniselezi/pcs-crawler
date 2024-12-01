@@ -5,3 +5,4 @@ black
 python-dotenv
 bs4
 markdown
+setuptools
