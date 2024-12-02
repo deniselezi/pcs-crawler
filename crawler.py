@@ -19,15 +19,6 @@ def _check_type(expected_type, args):
     return all(isinstance(item, expected_type) for item in args)
 
 
-def _is_repo_url(url):
-    pattern = r"https:\/\/github\.com\/[\w\-]+\/[\w\-]+(?=\/?)"
-    if re.search(pattern,url):
-        print("Found a match?")
-        return True
-    else:
-        return False
-
-
 def command_failed():
     print("COMMAND: python3 pcs-crawler.py LINK [MAX_REPOS]")
     sys.exit(1)
