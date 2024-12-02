@@ -1,5 +1,5 @@
 import unittest
-from crawler import get_args
+import crawler
 
 get_args_testcases = [
     # Positive Test Cases
@@ -32,7 +32,7 @@ class TestCrawler(unittest.TestCase):
             with self.subTest(f"Subtest {i} for command '{command}'"):
                 print(f"Subtest {i} for command '{command}'")
                 try:
-                    result = get_args(command)
+                    result = crawler.get_args(command)
                     self.assertEqual(result, expected_result)
                 except SystemExit as cm:
                     self.assertEqual(cm.code, expected_result)

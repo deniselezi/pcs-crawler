@@ -2,7 +2,6 @@ from collections import deque
 import math
 import sys
 import os
-import re
 
 from dotenv import find_dotenv, load_dotenv
 
