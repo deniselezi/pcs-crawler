@@ -14,8 +14,13 @@ dotenv_path = find_dotenv()
 load_dotenv(dotenv_path)
 
 
+def _check_type(expected_type, args):
+    return all(isinstance(item, expected_type) for item in args)
+
+
 def command_failed():
-    sys.exit()
+    print("COMMAND: python3 pcs-crawler.py LINK [MAX_REPOS]")
+    sys.exit(1)
 
 
 def get_args(args):
@@ -23,9 +28,12 @@ def get_args(args):
     args.pop(0)  # remove filename
     n_args = len(args)
 
+    if not _check_type(str, args):
+        print("Arguments aren't all strings.")
+        return command_failed()
+
     if not 1 <= n_args <= 2:
         print("Invalid number of args, please follow the correct format")
-        print("COMMAND: python3 pcs-crawler.py LINK [MAX_REPOS]")
         return command_failed()
 
     if not args[0].startswith("https://github.com/"):
