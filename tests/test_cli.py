@@ -1,5 +1,5 @@
 import unittest
-import crawler
+from pcs_cli.cli import CLI
 
 get_args_testcases = [
     # Positive Test Cases
@@ -28,12 +28,14 @@ get_args_testcases = [
 
 class TestCrawler(unittest.TestCase):
     def test_get_args(self):
+        cli = CLI()
         for i, (command, expected_result) in enumerate(get_args_testcases):
             with self.subTest(f"Subtest {i} for command '{command}'"):
-                print(f"Subtest {i} for command '{command}'")
+                print(f"\nSubtest {i} for command '{command}'")
                 try:
-                    result = crawler.get_args(command)
+                    result = cli.get_args(command)
                     self.assertEqual(result, expected_result)
+                    print(f"Successfully no Cmd errors for Subset {i}")
                 except SystemExit as cm:
                     self.assertEqual(cm.code, expected_result)
 

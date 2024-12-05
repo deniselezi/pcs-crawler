@@ -5,6 +5,7 @@ import os
 
 from dotenv import find_dotenv, load_dotenv
 
+from pcs_cli.cli import CLI
 from pcs_parser.parser import MarkdownParser
 from pcs_scraper.scraper import Scraper
 from pcs_spellchecker.spellchecker import Spellchecker
@@ -14,52 +15,18 @@ dotenv_path = find_dotenv()
 load_dotenv(dotenv_path)
 
 
-def _check_type(expected_type, args):
-    return all(isinstance(item, expected_type) for item in args)
-
-
-def command_failed():
-    print("COMMAND: python3 pcs-crawler.py LINK [MAX_REPOS]")
-    sys.exit(1)
-
-
-def get_args(args):
-    """Extracts arguments and validates them."""
-    args.pop(0)  # remove filename
-    n_args = len(args)
-
-    if not _check_type(str, args):
-        print("Arguments aren't all strings.")
-        return command_failed()
-
-    if not 1 <= n_args <= 2:
-        print("Invalid number of args, please follow the correct format")
-        return command_failed()
-
-    if not args[0].startswith("https://github.com/"):
-        print("First arg is not a valid GitHub URL")
-        return command_failed()
-
-    if n_args == 2 and not args[1].isdigit():
-        print("Incorrect command usage, argument 2 is not an integer")
-        return command_failed()
-
-    return args
-
-
 if __name__ == "__main__":
-    args = get_args(sys.argv)
+    cli = CLI()
+    args = cli.get_args(sys.argv)
 
     URL = args[0]
     user, password = os.getenv("USER"), os.getenv("PASSWORD")
 
     if not URL:
-        print("Please provide an URL")
-        command_failed()
+        cli.command_failed("Please provide an URL")
 
     if not user or not password:
-        print("Could not fetch username and/or password from .env")
-        command_failed()
+        cli.command_failed("Could not fetch username and/or password from .env")
 
     # start crawling
     to_crawl = deque([URL])
